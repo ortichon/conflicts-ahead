@@ -1,0 +1,11 @@
+{
+  "name": "conflicts-ahead",
+  "version": "1.0.0",
+  "description": "Avoid conflicts before they happen, and take control over your team's code",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Or Tichon",
+  "license": "ISC"
+}
