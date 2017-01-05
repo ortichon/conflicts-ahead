@@ -1,3 +1,6 @@
+var io = require('socket.io');
+var socket = require('socket.io-client')('http://localhost:9659');
+
 var git = require('simple-git');
 var _ = require('lodash');
 
@@ -11,14 +14,13 @@ main();
 setInterval(main, 5000);
 
 
-
-
 function updatedTouchedFiles(fileString) {
   var fileList = fileString.split('\n');
-  fileList =  _.compact(fileList);
+  fileList = _.compact(fileList);
   if (!_.isEqual(fileList, diffObj.touchedFiles)) {
     diffObj.touchedFiles = fileList;
     console.log('touchedFiles: ', diffObj.touchedFiles);
+    socket.emit('foo', 'foo');
   }
 }
 
