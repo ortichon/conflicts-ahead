@@ -1,9 +1,5 @@
 var git = require('simple-git');
 
-module.exports = {
-  GitWatcher: GitWatcher
-};
-
 
 function GitWatcher(client, interval) {
   this.client = client;
@@ -42,3 +38,5 @@ GitWatcher.prototype = {
     })
   }
 };
+
+module.exports = GitWatcher;

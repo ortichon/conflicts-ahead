@@ -1,6 +1,6 @@
 "use strict";
-var GitWatcher = require('./watcher').GitWatcher;
-var Client = require('./client').Client;
+var GitWatcher = require('./watcher');
+var Client = require('./client');
 
 
 var aClient = new Client('Or Tichon', '127.0.0.1');

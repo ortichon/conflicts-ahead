@@ -1,10 +1,6 @@
 var _ = require('lodash');
 var socket = require('socket.io-client')('http://localhost:9659');
 
-module.exports = {
-  Client: Client
-};
-
 function Client(username, ip) {
   this.username = username;
   this.ip = ip;
@@ -36,3 +32,5 @@ Client.prototype = {
     }
   }
 };
+
+module.exports = Client;
