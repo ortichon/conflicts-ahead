@@ -2,12 +2,21 @@
   "name": "conflicts-ahead",
   "version": "1.0.0",
   "description": "Avoid conflicts before they happen, and take control over your team's code",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "keywords": ["conflicts", "resolve", "team", "collaboration"],
+  "bugs" : {
+    "url": "https://github.com/ortichon/conflicts-ahead/issues",
+    "email": "or.tichon@gmail.com"
   },
-  "author": "Or Tichon",
   "license": "ISC",
+  "author": {
+    "name": "Or Tichon",
+    "email": "or.tichon@gmail.com"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ortichon/conflicts-ahead.git"
+  },
   "dependencies": {
     "express": "^4.14.0",
     "lodash": "^4.17.4",
