@@ -1,5 +1,6 @@
 var io = require('socket.io-client'),
-    _ = require('lodash');
+    _ = require('lodash'),
+    toQueryString = require('querystring');
 
 
 function Client(username, ip) {
@@ -13,12 +14,13 @@ function Client(username, ip) {
 
 Client.prototype = {
   constructor: Client,
-  connectToSocketIoServer: function() {
-    var self = this;
-    var queryString = 'username=' + self.username + '&ip=' + self.ip;
 
-    this.ioClient = io.connect('http://localhost:9659', {query: queryString});
+  connectToSocketIoServer: function() {
+    var query = toQueryString.stringify({username: this.username, ip: this.ip});
+
+    this.ioClient = io.connect('http://localhost:9659', {query: query});
   },
+
   updateTouchedFiles: function(fileList) {
     fileList = _.compact(fileList.split('\n'));
     var diff = !_.isEqual(fileList, this.touchedFiles);
@@ -31,6 +33,7 @@ Client.prototype = {
       self.ioClient.emit('foo', 'user ' + this.username + ' changed files: ' + this.touchedFiles);
     }
   },
+
   updateCurrentBranch: function(branchName) {
     branchName = _.trim(branchName);
 
