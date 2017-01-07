@@ -1,19 +1,22 @@
-var express = require('express');
-var http = require('http');
-var io = require('socket.io');
+var express = require('express'),
+    io = require('socket.io');
 
-var app = express();
-var server = http.Server(app);
-var ioServer = io(server);
 
-server.listen(9659, function() {
-  console.log('listening on *:9659');
-});
+var app = express();  // Define our app using express
 
 
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
+
+
+// Initialize web server
+var server = app.listen(9659, function() {
+  console.log('listening on port 9659');
+});
+
+// Initialize socket.io server
+var ioServer = io.listen(server);
 
 
 ioServer.on('connection', function(socket) {

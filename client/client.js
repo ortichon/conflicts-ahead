@@ -1,5 +1,5 @@
-var _ = require('lodash');
-var io = require('socket.io-client');
+var io = require('socket.io-client'),
+    _ = require('lodash');
 
 
 function Client(username, ip) {
