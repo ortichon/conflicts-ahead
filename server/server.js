@@ -38,11 +38,13 @@ ioServer.on('connection', function(socket) {
   })
 });
 
-function TeamServer(users) {
-  this.users = {};
+function TeamServer(teamName, users) {
+  this.teamName = teamName;
+  this.users = users;
   this.userCount = function() {
     return Object.keys(this.users).length;
-  }
+  };
+  console.log('Created new team: ', this.teamName);
 }
 
 TeamServer.prototype = {
@@ -65,5 +67,5 @@ TeamServer.prototype = {
   }
 };
 
-var aTeamServer = new TeamServer({});
+var aTeamServer = new TeamServer('Test team',{});
 
