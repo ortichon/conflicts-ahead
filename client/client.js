@@ -30,7 +30,11 @@ Client.prototype = {
       this.touchedFiles = fileList;
       console.log('touched files has updated for user: ', this.username);
       console.log('touched files: ', this.touchedFiles);
-      self.ioClient.emit('foo', 'user ' + this.username + ' changed files: ' + this.touchedFiles);
+      var updateObject = {
+        username: this.username,
+        touchedFiles: this.touchedFiles
+      };
+      self.ioClient.emit('files changed', updateObject);
     }
   },
 

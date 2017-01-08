@@ -1,5 +1,6 @@
 var express = require('express'),
-    io = require('socket.io');
+    io = require('socket.io'),
+    Client = require('../client/client');
 
 
 var app = express();  // Define our app using express
@@ -20,15 +21,49 @@ var ioServer = io.listen(server);
 
 
 ioServer.on('connection', function(socket) {
-  console.log('a user connected with id: ', socket.id);
-  console.log('username: ', socket.handshake.query.username);
-  console.log('ip: ', socket.handshake.query.ip);
+  var userObject = {
+    username: socket.handshake.query.username,
+    ip: socket.handshake.query.ip,
+    id: socket.id
+  };
+
+  aTeamServer.addClient(userObject);
 
   socket.on('disconnect', function(){
-    console.log('user disconnected with id: ', socket.id);
+    aTeamServer.removeClient(userObject);
   });
 
-  socket.on('foo', function(msg) {
-    console.log('>>> ', msg);
+  socket.on('files changed', function(msg) {
+    aTeamServer.updateTouchedFiles(socket.id, msg.touchedFiles);
   })
 });
+
+function TeamServer(users) {
+  this.users = {};
+  this.userCount = function() {
+    return Object.keys(this.users).length;
+  }
+}
+
+TeamServer.prototype = {
+  constructor: TeamServer,
+
+  addClient: function(client) {
+    this.users[client.id] = client;
+    console.log(client.username, ' with ip: ', client.ip, ' connected');
+  },
+
+  removeClient: function(client) {
+    delete this.users[client.id];
+    console.log('client ', client.username, ' removed');
+
+  },
+
+  updateTouchedFiles: function(clientId, touchedFiles) {
+    this.users[clientId].touchedFiles = touchedFiles;
+    console.log('touched files for ', this.users[clientId].username, ' updated');
+  }
+};
+
+var aTeamServer = new TeamServer({});
+
