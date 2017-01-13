@@ -16,7 +16,11 @@ Client.prototype = {
   constructor: Client,
 
   connectToSocketIoServer: function() {
-    var query = toQueryString.stringify({username: this.username, ip: this.ip});
+    var query = toQueryString.stringify({
+      currentBranch: this.currentBranch,
+      username: this.username,
+      ip: this.ip
+    });
 
     this.ioClient = io.connect('http://localhost:9659', {query: query});
   },

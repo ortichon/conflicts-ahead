@@ -1,7 +1,6 @@
 var express = require('express'),
     io = require('socket.io'),
-    Client = require('../client/client');
-
+    _ = require('lodash');
 
 var app = express();  // Define our app using express
 
@@ -22,6 +21,7 @@ var ioServer = io.listen(server);
 
 ioServer.on('connection', function(socket) {
   var userObject = {
+    currentBranch: socket.handshake.query.currentBranch,
     username: socket.handshake.query.username,
     ip: socket.handshake.query.ip,
     id: socket.id
@@ -38,6 +38,7 @@ ioServer.on('connection', function(socket) {
   })
 });
 
+// TODO: maybe change to connected clients
 function TeamServer(teamName, users) {
   this.teamName = teamName;
   this.users = users;
@@ -66,6 +67,28 @@ TeamServer.prototype = {
     console.log('touched files for ', this.users[clientId].username, ' updated');
   }
 };
+
+// TODO: maybe change to users db?
+function UserData(username, branchName) {
+  this.username = username;
+  this[username] = {};
+  this[username][branchName] = {
+    file_list: [],
+    last_modified: new Date(),
+    isActive: true
+  }
+}
+
+UserData.prototype = {
+  constructor: UserData,
+
+  updateTouchedFiles: function(branchName, fileList) {
+    this[branchName].file_list = _.union(this[branchName].file_list, fileList);
+    console.log('file list has updated for branch ', branchName, ' [', this.username, ']');
+  }
+};
+
+
 
 var aTeamServer = new TeamServer('Test team',{});
 
