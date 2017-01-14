@@ -27,8 +27,6 @@ ioServer.on('connection', function(socket) {
     id: socket.id
   };
 
-  console.log('userObject: ', userObject);
-
   aTeamServer.addClient(userObject);
 
   socket.on('disconnect', function(){

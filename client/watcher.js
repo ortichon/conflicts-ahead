@@ -1,4 +1,4 @@
-var git = require('simple-git');
+var Git = require('simple-git');
 
 
 function GitWatcher(client, interval) {
@@ -22,7 +22,7 @@ GitWatcher.prototype = {
 
   getTouchedFilesList: function() {
     var self = this;
-    git().diff(['--name-only'], function(err, res) {
+    Git().diff(['--name-only'], function(err, res) {
       if (err) {
         console.error('error: ', err);
       } else {
@@ -33,7 +33,7 @@ GitWatcher.prototype = {
 
   getCurrentBranchName: function () {
     var self = this;
-    git().revparse(['--abbrev-ref', 'HEAD'], function(err, res) {
+    Git().revparse(['--abbrev-ref', 'HEAD'], function(err, res) {
       if (err) {
         console.error('error: ', err);
       } else {
