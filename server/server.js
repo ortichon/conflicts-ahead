@@ -21,20 +21,27 @@ var ioServer = io.listen(server);
 
 ioServer.on('connection', function(socket) {
   var userObject = {
-    currentBranch: socket.handshake.query.currentBranch,
+    repoName: socket.handshake.query.repoName,
     username: socket.handshake.query.username,
     ip: socket.handshake.query.ip,
     id: socket.id
   };
 
+  console.log('userObject: ', userObject);
+
   aTeamServer.addClient(userObject);
 
   socket.on('disconnect', function(){
+    console.log('client disconnected');
     aTeamServer.removeClient(userObject);
   });
 
-  socket.on('files changed', function(msg) {
-    aTeamServer.updateTouchedFiles(socket.id, msg.touchedFiles);
+  socket.on('files changed', function(touchedFiles) {
+    aTeamServer.updateTouchedFiles(socket.id, touchedFiles);
+  });
+
+  socket.on('branch changed', function(currentBranch) {
+    aTeamServer.updateCurrentBranch(socket.id, currentBranch)
   })
 });
 
@@ -65,6 +72,13 @@ TeamServer.prototype = {
   updateTouchedFiles: function(clientId, touchedFiles) {
     this.users[clientId].touchedFiles = touchedFiles;
     console.log('touched files for ', this.users[clientId].username, ' updated');
+    console.log('>>> : ', this.users[clientId]);
+  },
+
+  updateCurrentBranch: function(clientId, currentBranch) {
+    this.users[clientId].currentBranch = currentBranch;
+    console.log('current branch for ', this.users[clientId].username, ' updated');
+    console.log('>>> : ', this.users[clientId]);
   }
 };
 

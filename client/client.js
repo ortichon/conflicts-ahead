@@ -3,12 +3,13 @@ var io = require('socket.io-client'),
     toQueryString = require('querystring');
 
 
-function Client(username, ip) {
+function Client(username, ip , repoName) {
   this.username = username;
   this.ip = ip;
   this.touchedFiles = [];
   this.currentBranch = '';
   this.ioClient = null;
+  this.repoName = repoName;
   console.log('Client initiated');
 }
 
@@ -17,38 +18,39 @@ Client.prototype = {
 
   connectToSocketIoServer: function() {
     var query = toQueryString.stringify({
-      currentBranch: this.currentBranch,
+      repoName: this.repoName,
       username: this.username,
       ip: this.ip
     });
 
     this.ioClient = io.connect('http://localhost:9659', {query: query});
+
+    this.ioClient.on('connect', function () {
+      console.log('Socket is connected.');
+    });
+
+    this.ioClient.on('disconnect', function () {
+      console.log('Socket is disconnected.');
+    });
   },
 
   updateTouchedFiles: function(fileList) {
+    var self = this;
     fileList = _.compact(fileList.split('\n'));
     var diff = !_.isEqual(fileList, this.touchedFiles);
-    var self = this;
 
     if (fileList && diff) {
       this.touchedFiles = fileList;
-      console.log('touched files has updated for user: ', this.username);
-      console.log('touched files: ', this.touchedFiles);
-      var updateObject = {
-        username: this.username,
-        touchedFiles: this.touchedFiles
-      };
-      self.ioClient.emit('files changed', updateObject);
+      this.ioClient.emit('files changed', this.touchedFiles);
     }
   },
 
   updateCurrentBranch: function(branchName) {
-    branchName = _.trim(branchName);
+    var self = this;
 
     if (!_.isEqual(branchName, this.currentBranch)) {
       this.currentBranch = branchName;
-      console.log('branch name has updated for user: ', this.username);
-      console.log('branch name: ', this.currentBranch);
+      this.ioClient.emit('branch changed', this.currentBranch)
     }
   }
 };

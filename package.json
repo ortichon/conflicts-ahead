@@ -2,8 +2,13 @@
   "name": "conflicts-ahead",
   "version": "1.0.0",
   "description": "Avoid conflicts before they happen, and take control over your team's code",
-  "keywords": ["conflicts", "resolve", "team", "collaboration"],
-  "bugs" : {
+  "keywords": [
+    "conflicts",
+    "resolve",
+    "team",
+    "collaboration"
+  ],
+  "bugs": {
     "url": "https://github.com/ortichon/conflicts-ahead/issues",
     "email": "or.tichon@gmail.com"
   },
@@ -18,7 +23,9 @@
     "url": "https://github.com/ortichon/conflicts-ahead.git"
   },
   "dependencies": {
+    "bluebird": "^3.4.7",
     "express": "^4.14.0",
+    "ip": "^1.1.4",
     "lodash": "^4.17.4",
     "simple-git": "^1.65.0",
     "socket.io": "^1.7.2",
