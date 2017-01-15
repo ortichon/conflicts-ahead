@@ -1,4 +1,8 @@
 "use strict";
+
+// nodejs modules
+var path = require('path');
+
 // 3rd party modules
 var express = require('express'),
     io = require('socket.io'),
@@ -11,10 +15,20 @@ var RepoServer = require('./repo-server'),
 
 var app = express();  // Define our app using express
 
+// var publicFolder = __dirname + (argv.dist ? '/public/dist' : '/public');
+var publicFolder = __dirname + '/public';
 
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
+
+app.use(express.static(publicFolder));
+
+app.get('*', function(req, res) {
+  res.sendFile(path.join(publicFolder + '/index.html'));
 });
+
+
+// app.get('/', function(req, res){
+//   res.sendFile(__dirname + '/index.html');
+// });
 
 
 // Initialize web server
