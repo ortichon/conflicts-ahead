@@ -1,8 +1,12 @@
-var GitWatcher = require('./watcher'),
-    Client = require('./client'),
-    Git = require('simple-git'),
-    Promise = require('bluebird'),
-    IP = require('ip');
+"use strict";
+// 3rd party modules
+var Git = require('simple-git'),
+    IP = require('ip'),
+    Promise = require('bluebird');
+
+// own modules
+var Client = require('./client'),
+    GitWatcher = require('./watcher');
 
 
 function Agent() {
@@ -11,19 +15,6 @@ function Agent() {
 
 Agent.prototype = {
   constructor: Agent,
-
-  initAgent: function(username, repoName) {
-    var ipAddress = IP.address();
-    var aClient = new Client(username, ipAddress, repoName);
-    var aWatcher = new GitWatcher(aClient, 5000);
-
-    aClient.connectToSocketIoServer();
-    aWatcher.start();
-  },
-
-  start: function() {
-    Promise.join(this.getGitUserName(), this.getRepoName(), this.initAgent);
-  },
 
   getGitUserName: function() {
     return new Promise(function(resolve, reject) {
@@ -49,6 +40,19 @@ Agent.prototype = {
         }
       });
     })
+  },
+
+  initAgent: function(username, repoName) {
+    var ipAddress = IP.address();
+    var aClient = new Client(username, ipAddress, repoName);
+    var aWatcher = new GitWatcher(aClient, 5000);
+
+    aClient.connectToSocketIoServer();
+    aWatcher.start();
+  },
+
+  start: function() {
+    Promise.join(this.getGitUserName(), this.getRepoName(), this.initAgent);
   }
 };
 

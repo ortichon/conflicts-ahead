@@ -1,6 +1,8 @@
+"use strict";
 var io = require('socket.io-client'),
-    _ = require('lodash'),
-    toQueryString = require('querystring');
+    toQueryString = require('querystring'),
+    _ = require('lodash');
+
 
 
 function Client(username, ip , repoName) {

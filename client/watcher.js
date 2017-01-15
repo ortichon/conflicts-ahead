@@ -1,3 +1,4 @@
+"use strict";
 var Git = require('simple-git');
 
 

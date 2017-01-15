@@ -1,3 +1,4 @@
+"use strict";
 // 3rd party modules
 var express = require('express'),
     io = require('socket.io'),
