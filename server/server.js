@@ -1,6 +1,12 @@
+// 3rd party modules
 var express = require('express'),
     io = require('socket.io'),
     _ = require('lodash');
+
+// own modules
+var RepoServer = require('./repo-server'),
+    User = require('./user');
+
 
 var app = express();  // Define our app using express
 
@@ -62,88 +68,3 @@ ioServer.on('connection', function(socket) {
     // aTeamServer.updateCurrentBranch(socket.id, currentBranch)
   })
 });
-
-// var aTeamServer = new RepoServer('Test team',{});
-
-// TODO: maybe change to connected clients
-function RepoServer(repoName, users) {
-  this.repoName = repoName;
-  this.users = users;
-  console.log('Created new team: ', this.repoName);
-}
-
-RepoServer.prototype = {
-  constructor: RepoServer,
-
-  addClient: function(client) {
-    // this.users[client.id] = client;
-    this.users[client.username] = client;
-    console.log(client.username, ' with ip: ', client.ip, ' connected');
-    console.log('this.users: ', this.users);
-  },
-
-  getUserCount: function() {
-    return Object.keys(this.users).length;
-  },
-
-  // removeClient: function(client) {
-  //   delete this.users[client.id];
-  //   console.log('client ', client.username, ' removed');
-  //
-  // },
-
-  showActiveUsers: function() {
-    // filter out deactivated users
-    var activeUsers = _.filter(this.users, function(user) {
-      return user.isActive;
-    });
-    // return only user names instead of whole object
-    return _.map(activeUsers, function(user) {
-      return user.username;
-    });
-  },
-
-  updateTouchedFiles: function(username, touchedFiles) {
-    this.users[username].updateTouchedFiles(touchedFiles);
-    console.log('>>> : ', this.users[username]);
-  }
-
-  // updateCurrentBranch: function(clientId, currentBranch) {
-  //   this.users[clientId].currentBranch = currentBranch;
-  //   console.log('current branch for ', this.users[clientId].username, ' updated');
-  //   console.log('>>> : ', this.users[clientId]);
-  // }
-};
-
-// TODO: maybe change to users db?
-function User(username, ip) {
-  this.username = username;
-  this.ip = ip;
-  this.isActive = true;
-  this.touchedFiles = [];
-  this.lastModified = null;
-}
-
-User.prototype = {
-  constructor: User,
-
-  updateTouchedFiles: function(fileList) {
-    // this.touchedFiles = _.union(this.touchedFiles, fileList);
-    this.touchedFiles = fileList;
-    this.lastModified = new Date();
-    console.log('file list has updated for ', this.username);
-  },
-
-  activate: function() {
-    this.isActive = true;
-  },
-
-  deactivate: function() {
-    this.isActive = false;
-  }
-};
-
-
-
-
-
