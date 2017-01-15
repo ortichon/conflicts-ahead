@@ -18,89 +18,132 @@ var server = app.listen(9659, function() {
 // Initialize socket.io server
 var ioServer = io.listen(server);
 
+var availableRepos = {};
 
+// Initial client connection sequence
 ioServer.on('connection', function(socket) {
-  var userObject = {
-    repoName: socket.handshake.query.repoName,
-    username: socket.handshake.query.username,
-    ip: socket.handshake.query.ip,
-    id: socket.id
-  };
+  var repoName = socket.handshake.query.repoName;
+  var username = socket.handshake.query.username;
+  var ip = socket.handshake.query.ip;
+  var id = socket.id;
 
-  aTeamServer.addClient(userObject);
+  var repoExists = _.has(availableRepos, repoName);
+
+  if (repoExists) {
+    var userExists = availableRepos[repoName]['users'][username];
+
+    if (userExists) {
+      userExists.activate();
+    } else {
+      // create new user
+      var aClient = new User(username, ip);
+      availableRepos[repoName].addClient(aClient);
+    }
+  } else {
+    // create new user for the new repo
+    var users = {};
+    users[username] = new User(username, ip);
+
+    // create new repo with the new user
+    availableRepos[repoName] = new RepoServer(repoName, users);
+  }
+
 
   socket.on('disconnect', function(){
-    console.log('client disconnected');
-    aTeamServer.removeClient(userObject);
+    availableRepos[repoName]['users'][username].deactivate();
+    console.log('client disconnected: ', username);
   });
 
   socket.on('files changed', function(touchedFiles) {
-    aTeamServer.updateTouchedFiles(socket.id, touchedFiles);
+    availableRepos[repoName].updateTouchedFiles(username, touchedFiles);
   });
 
   socket.on('branch changed', function(currentBranch) {
-    aTeamServer.updateCurrentBranch(socket.id, currentBranch)
+    // aTeamServer.updateCurrentBranch(socket.id, currentBranch)
   })
 });
 
+// var aTeamServer = new RepoServer('Test team',{});
+
 // TODO: maybe change to connected clients
-function TeamServer(teamName, users) {
-  this.teamName = teamName;
+function RepoServer(repoName, users) {
+  this.repoName = repoName;
   this.users = users;
-  this.userCount = function() {
-    return Object.keys(this.users).length;
-  };
-  console.log('Created new team: ', this.teamName);
+  console.log('Created new team: ', this.repoName);
 }
 
-TeamServer.prototype = {
-  constructor: TeamServer,
+RepoServer.prototype = {
+  constructor: RepoServer,
 
   addClient: function(client) {
-    this.users[client.id] = client;
+    // this.users[client.id] = client;
+    this.users[client.username] = client;
     console.log(client.username, ' with ip: ', client.ip, ' connected');
+    console.log('this.users: ', this.users);
   },
 
-  removeClient: function(client) {
-    delete this.users[client.id];
-    console.log('client ', client.username, ' removed');
-
+  getUserCount: function() {
+    return Object.keys(this.users).length;
   },
 
-  updateTouchedFiles: function(clientId, touchedFiles) {
-    this.users[clientId].touchedFiles = touchedFiles;
-    console.log('touched files for ', this.users[clientId].username, ' updated');
-    console.log('>>> : ', this.users[clientId]);
+  // removeClient: function(client) {
+  //   delete this.users[client.id];
+  //   console.log('client ', client.username, ' removed');
+  //
+  // },
+
+  showActiveUsers: function() {
+    // filter out deactivated users
+    var activeUsers = _.filter(this.users, function(user) {
+      return user.isActive;
+    });
+    // return only user names instead of whole object
+    return _.map(activeUsers, function(user) {
+      return user.username;
+    });
   },
 
-  updateCurrentBranch: function(clientId, currentBranch) {
-    this.users[clientId].currentBranch = currentBranch;
-    console.log('current branch for ', this.users[clientId].username, ' updated');
-    console.log('>>> : ', this.users[clientId]);
+  updateTouchedFiles: function(username, touchedFiles) {
+    this.users[username].updateTouchedFiles(touchedFiles);
+    console.log('>>> : ', this.users[username]);
   }
+
+  // updateCurrentBranch: function(clientId, currentBranch) {
+  //   this.users[clientId].currentBranch = currentBranch;
+  //   console.log('current branch for ', this.users[clientId].username, ' updated');
+  //   console.log('>>> : ', this.users[clientId]);
+  // }
 };
 
 // TODO: maybe change to users db?
-function UserData(username, branchName) {
+function User(username, ip) {
   this.username = username;
-  this[username] = {};
-  this[username][branchName] = {
-    file_list: [],
-    last_modified: new Date(),
-    isActive: true
-  }
+  this.ip = ip;
+  this.isActive = true;
+  this.touchedFiles = [];
+  this.lastModified = null;
 }
 
-UserData.prototype = {
-  constructor: UserData,
+User.prototype = {
+  constructor: User,
 
-  updateTouchedFiles: function(branchName, fileList) {
-    this[branchName].file_list = _.union(this[branchName].file_list, fileList);
-    console.log('file list has updated for branch ', branchName, ' [', this.username, ']');
+  updateTouchedFiles: function(fileList) {
+    // this.touchedFiles = _.union(this.touchedFiles, fileList);
+    this.touchedFiles = fileList;
+    this.lastModified = new Date();
+    console.log('file list has updated for ', this.username);
+  },
+
+  activate: function() {
+    this.isActive = true;
+  },
+
+  deactivate: function() {
+    this.isActive = false;
   }
 };
 
 
 
-var aTeamServer = new TeamServer('Test team',{});
+
 
