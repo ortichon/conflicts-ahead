@@ -20,7 +20,6 @@ User.prototype = {
   },
 
   updateTouchedFiles: function(fileList) {
-    // this.touchedFiles = _.union(this.touchedFiles, fileList);
     this.touchedFiles = fileList;
     this.lastModified = new Date();
     console.log('file list has updated for ', this.username);
