@@ -1,4 +1,5 @@
 "use strict";
+
 var Agent = require('./agent');
 
 

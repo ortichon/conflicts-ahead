@@ -1,12 +1,12 @@
 "use strict";
-// 3rd party modules
-var Git = require('simple-git'),
-    IP = require('ip'),
-    Promise = require('bluebird');
 
+// 3rd party modules
+var Git = require('simple-git');
+var IP = require('ip');
+var Promise = require('bluebird');
 // own modules
-var Client = require('./client'),
-    GitWatcher = require('./watcher');
+var Client = require('./client');
+var GitWatcher = require('./watcher');
 
 
 function Agent() {
