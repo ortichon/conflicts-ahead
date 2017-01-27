@@ -12,6 +12,8 @@ var User = require('./user');
 var DataHandler = require('./data-handler');
 
 
+var port = process.env.PORT || 9659;
+
 // let the server die gracefully
 process.on('SIGINT', cleanExit); // catch ctrl-c
 process.on('SIGTERM', cleanExit); // catch kill
@@ -28,8 +30,8 @@ var availableRepos = DataHandler.fetchLocalData();
 var app = express();
 
 // Initialize web server
-var server = app.listen(9659, function() {
-  console.log('listening on port 9659');
+var server = app.listen(port, function() {
+  console.log('listening on port: ', port);
 });
 
 // Initialize socket.io server
