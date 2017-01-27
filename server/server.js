@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 // nodejs modules
 var path = require('path');
@@ -58,7 +58,7 @@ ioServer.on('connection', function(socket) {
 
   if (repoExists) {
     console.log('repo exists');
-    var userExists = availableRepos[repoName]['users'][username];
+    var userExists = availableRepos[repoName].users[username];
 
     if (userExists) {
       console.log('userExists');
@@ -79,8 +79,8 @@ ioServer.on('connection', function(socket) {
   }
 
 
-  socket.on('disconnect', function(){
-    availableRepos[repoName]['users'][username].deactivate();
+  socket.on('disconnect', function() {
+    availableRepos[repoName].users[username].deactivate();
     console.log('client disconnected: ', username);
   });
 
@@ -89,6 +89,7 @@ ioServer.on('connection', function(socket) {
   });
 
   socket.on('branch changed', function(currentBranch) {
+    _.noop(currentBranch);
     // aTeamServer.updateCurrentBranch(socket.id, currentBranch)
-  })
+  });
 });

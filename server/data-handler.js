@@ -35,8 +35,8 @@ var dataHandler = {
 
         availableRepos[repoName] = repo;   // update available repos object
       });
-    }
-    catch (err) {
+
+    } catch (err) {
       availableRepos = {};  // if file does not exists or not readable
     }
     return availableRepos;
