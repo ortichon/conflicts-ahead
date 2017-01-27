@@ -30,5 +30,9 @@
     "simple-git": "^1.65.0",
     "socket.io": "^1.7.2",
     "socket.io-client": "^1.7.2"
+  },
+  "devDependencies": {
+    "eslint": "^3.14.1",
+    "eslint-plugin-lodash": "^2.3.3"
   }
 }
