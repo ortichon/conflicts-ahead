@@ -43,8 +43,12 @@ var publicFolder = __dirname + '/public';
 app.use(express.static(publicFolder));
 
 // basic initial client response
-app.get('*', function(req, res) {
+app.get('/', function(req, res) {
   res.sendFile(path.join(publicFolder + '/index.html'));
+});
+
+app.get('/team', function(req, res) {
+  res.send({data: ['foo', 'bar']});
 });
 
 
