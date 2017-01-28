@@ -1,0 +1,18 @@
+{
+  "name": "conflicts-ahead",
+  "description": "Avoid conflicts before they happen, and take control over your team's code",
+  "scripts": {
+  },
+  "env": {
+  },
+  "formation": {
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}
