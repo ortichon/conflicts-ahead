@@ -19,6 +19,7 @@ Client.prototype = {
   constructor: Client,
 
   connectToSocketIoServer: function() {
+    var self = this;
     var query = toQueryString.stringify({
       repoName: this.repoName,
       username: this.username,
@@ -31,11 +32,16 @@ Client.prototype = {
 
     this.ioClient.on('connect', function () {
       console.log('Socket is connected.');
+      self.sendTouchedFilesToServer();
     });
 
     this.ioClient.on('disconnect', function () {
       console.log('Socket is disconnected.');
     });
+  },
+
+  sendTouchedFilesToServer: function() {
+    this.ioClient.emit('files changed', this.touchedFiles);
   },
 
   updateTouchedFiles: function(fileList) {
@@ -44,7 +50,7 @@ Client.prototype = {
 
     if (fileList && diff) {
       this.touchedFiles = fileList;
-      this.ioClient.emit('files changed', this.touchedFiles);
+      this.sendTouchedFilesToServer();
     }
   },
 
