@@ -8,12 +8,23 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class TeamService {
 
-  private heroesUrl = 'http://localhost:9659/team';
+  private baseUrl = 'http://localhost:9659';
+
 
   constructor(private http: Http) {}
 
-  getTeam(): Observable<any[]> {
-    return this.http.get(this.heroesUrl)
+  getRepos(): Observable<any[]> {
+    let url = `${this.baseUrl}/repos`;
+
+    return this.http.get(url)
+      .map(this.extractData)
+      .catch(this.handleError);
+  }
+
+  getUsers(repoName: string): Observable<any[]> {
+    let url = `${this.baseUrl}/users/${repoName}`;
+
+    return this.http.get(url)
       .map(this.extractData)
       .catch(this.handleError);
   }

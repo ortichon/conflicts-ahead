@@ -47,8 +47,15 @@ app.get('/', function(req, res) {
   res.sendFile(path.join(publicFolder + '/index.html'));
 });
 
-app.get('/team', function(req, res) {
-  res.send({data: availableRepos});
+app.get('/repos', function(req, res) {
+  res.send({data: Object.keys(availableRepos)});
+});
+
+app.get('/users/:repoName', function(req, res) {
+  var repoName = req.params.repoName;
+  var userList = _.toArray(availableRepos[repoName].users);
+
+  res.send({data: userList});
 });
 
 
