@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 // 3rd party modules
 var Git = require('simple-git');
@@ -24,8 +24,8 @@ Agent.prototype = {
         } else {
           resolve(res.trim());
         }
-      })
-    })
+      });
+    });
   },
 
   getRepoName: function() {
@@ -39,7 +39,7 @@ Agent.prototype = {
           resolve(repoName);
         }
       });
-    })
+    });
   },
 
   initAgent: function(username, repoName) {

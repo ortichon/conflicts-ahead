@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 function User(username, ip) {
   this.username = username;

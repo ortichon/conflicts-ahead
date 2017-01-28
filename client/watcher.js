@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var Git = require('simple-git');
 
@@ -14,7 +14,7 @@ GitWatcher.prototype = {
   start: function() {
     var self = this;
     this.watchGit();
-    setInterval(function() {self.watchGit()}, self.interval);
+    setInterval(function() {self.watchGit();}, self.interval);
   },
 
   watchGit: function() {
@@ -24,7 +24,7 @@ GitWatcher.prototype = {
 
   getTouchedFilesList: function() {
     var self = this;
-    Git().diff(['--name-only'], function(err, res) {
+    Git().diff([ '--name-only' ], function(err, res) {
       if (err) {
         console.error('error: ', err);
       } else {
@@ -41,7 +41,7 @@ GitWatcher.prototype = {
       } else {
         self.client.updateCurrentBranch(res.trim());
       }
-    })
+    });
   }
 };
 
