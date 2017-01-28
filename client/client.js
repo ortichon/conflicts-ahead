@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var io = require('socket.io-client');
 var toQueryString = require('querystring');
@@ -25,8 +25,9 @@ Client.prototype = {
       ip: this.ip
     });
 
-    // this.ioClient = io.connect('http://localhost:9659', {query: query});
-    this.ioClient = io.connect('https://conflicts-ahead.herokuapp.com/', {query: query});
+    this.ioClient = io.connect('http://localhost:9659', {query: query});
+    // this.ioClient = io
+    //   .connect('https://conflicts-ahead.herokuapp.com/', {query: query});
 
     this.ioClient.on('connect', function () {
       console.log('Socket is connected.');
@@ -38,7 +39,6 @@ Client.prototype = {
   },
 
   updateTouchedFiles: function(fileList) {
-    var self = this;
     fileList = _.compact(fileList.split('\n'));
     var diff = !_.isEqual(fileList, this.touchedFiles);
 
@@ -49,11 +49,9 @@ Client.prototype = {
   },
 
   updateCurrentBranch: function(branchName) {
-    var self = this;
-
     if (!_.isEqual(branchName, this.currentBranch)) {
       this.currentBranch = branchName;
-      this.ioClient.emit('branch changed', this.currentBranch)
+      this.ioClient.emit('branch changed', this.currentBranch);
     }
   }
 };

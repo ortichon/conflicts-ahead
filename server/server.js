@@ -43,8 +43,19 @@ var publicFolder = __dirname + '/public';
 app.use(express.static(publicFolder));
 
 // basic initial client response
-app.get('*', function(req, res) {
+app.get('/', function(req, res) {
   res.sendFile(path.join(publicFolder + '/index.html'));
+});
+
+app.get('/repos', function(req, res) {
+  res.send({data: Object.keys(availableRepos)});
+});
+
+app.get('/users/:repoName', function(req, res) {
+  var repoName = req.params.repoName;
+  var userList = _.toArray(availableRepos[repoName].users);
+
+  res.send({data: userList});
 });
 
 
