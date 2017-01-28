@@ -4,20 +4,30 @@ import { TeamService } from './team/team.service';
 
 @Component({
   selector: 'my-app',
-  template: `<h1>Hello {{name}} {{teamList}}</h1>`,
+  template: `
+                <div *ngFor="let teamName of teamNames">
+                    <div>{{teamName}}</div>
+                </div>
+`,
 })
 export class AppComponent implements OnInit {
 
   constructor(private teamService: TeamService){}
 
   name = 'Angular';
-  teamList: string;
+  teamNames: string[];
   errorMessage: string;
+  teams: any;
 
   ngOnInit() {
     this.teamService.getTeam()
       .subscribe(
-        teams => this.teamList = teams.join(', '),
+        teams => this.parseTeams(teams),
         error =>  this.errorMessage = <any>error);
+  }
+
+  parseTeams(teams: any) {
+    this.teams = teams;
+    this.teamNames = Object.keys(teams);
   }
 }

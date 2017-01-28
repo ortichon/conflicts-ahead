@@ -48,7 +48,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/team', function(req, res) {
-  res.send({data: ['foo', 'bar']});
+  res.send({data: availableRepos});
 });
 
 

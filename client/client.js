@@ -25,8 +25,8 @@ Client.prototype = {
       ip: this.ip
     });
 
-    // this.ioClient = io.connect('http://localhost:9659', {query: query});
-    this.ioClient = io.connect('https://conflicts-ahead.herokuapp.com/', {query: query});
+    this.ioClient = io.connect('http://localhost:9659', {query: query});
+    // this.ioClient = io.connect('https://conflicts-ahead.herokuapp.com/', {query: query});
 
     this.ioClient.on('connect', function () {
       console.log('Socket is connected.');
