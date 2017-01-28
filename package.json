@@ -17,7 +17,9 @@
     "name": "Or Tichon",
     "email": "or.tichon@gmail.com"
   },
-  "scripts": {},
+  "scripts": {
+    "heroku-postbuild": "npm --prefix ./server/public install"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/ortichon/conflicts-ahead.git"
