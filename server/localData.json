@@ -1,0 +1,16 @@
+{
+  "conflicts-ahead.git": {
+    "repoName": "conflicts-ahead.git",
+    "users": {
+      "Or Tichon": {
+        "username": "Or Tichon",
+        "ip": "192.168.1.4",
+        "isActive": true,
+        "touchedFiles": [
+          "client/client.js"
+        ],
+        "lastModified": "2017-01-28T19:14:27.570Z"
+      }
+    }
+  }
+}
