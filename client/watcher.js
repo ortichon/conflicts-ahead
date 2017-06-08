@@ -1,48 +1,42 @@
 'use strict';
 
-var Git = require('simple-git');
+import Git from 'simple-git';
 
 
-function GitWatcher(client, interval) {
-  this.client = client;
-  this.interval = interval;
-}
+export default class GitWatcher {
 
-GitWatcher.prototype = {
-  constructor: GitWatcher,
+  constructor(client, interval) {
+    this.client = client;
+    this.interval = interval;
+  }
 
-  start: function() {
-    var self = this;
+  start() {
     this.watchGit();
-    setInterval(function() {self.watchGit();}, self.interval);
-  },
+    setInterval(() => this.watchGit(), this.interval);
+  }
 
-  watchGit: function() {
+  watchGit() {
     this.getCurrentBranchName();
     this.getTouchedFilesList();
-  },
+  }
 
-  getTouchedFilesList: function() {
-    var self = this;
-    Git().diff([ '--name-only' ], function(err, res) {
+  getTouchedFilesList() {
+    Git().diff([ '--name-only' ], (err, res) => {
       if (err) {
         console.error('error: ', err);
       } else {
-        self.client.updateTouchedFiles(res);
+        this.client.updateTouchedFiles(res);
       }
     });
-  },
+  }
 
-  getCurrentBranchName: function () {
-    var self = this;
-    Git().revparse(['--abbrev-ref', 'HEAD'], function(err, res) {
+  getCurrentBranchName() {
+    Git().revparse(['--abbrev-ref', 'HEAD'], (err, res) => {
       if (err) {
         console.error('error: ', err);
       } else {
-        self.client.updateCurrentBranch(res.trim());
+        this.client.updateCurrentBranch(res.trim());
       }
     });
   }
 };
-
-module.exports = GitWatcher;

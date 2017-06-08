@@ -1,7 +1,7 @@
 'use strict';
 
-var Agent = require('./agent');
+import Agent from './agent';
 
 
-var aAgent = new Agent();
+const aAgent = new Agent();
 aAgent.start();

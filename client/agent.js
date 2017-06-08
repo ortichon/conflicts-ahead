@@ -1,24 +1,22 @@
 'use strict';
 
 // 3rd party modules
-var Git = require('simple-git');
-var IP = require('ip');
-var Promise = require('bluebird');
+import Git from 'simple-git';
+import IP from 'ip';
 // own modules
-var Client = require('./client');
-var GitWatcher = require('./watcher');
+import Client from './client';
+import GitWatcher from './watcher';
 
 
-function Agent() {
-  console.log('Agent initiated');
-}
+export default class Agent {
 
-Agent.prototype = {
-  constructor: Agent,
+  constructor() {
+    console.log('Agent initiated');
+  }
 
-  getGitUserName: function() {
-    return new Promise(function(resolve, reject) {
-      Git().raw(['config' , 'user.name'], function(err, res) {
+  getGitUserName() {
+    return new Promise((resolve, reject) => {
+      Git().raw(['config' , 'user.name'], (err, res) => {
         if (err) {
           reject(err);
         } else {
@@ -26,34 +24,33 @@ Agent.prototype = {
         }
       });
     });
-  },
+  }
 
-  getRepoName: function() {
-    return new Promise(function(resolve, reject) {
-      Git().getRemotes(true, function (err, res) {
+  getRepoName() {
+    return new Promise((resolve, reject) => {
+      Git().getRemotes(true,  (err, res) => {
         if (err) {
           reject(err);
         } else {
-          var repoURL = res[0].refs.fetch;
-          var repoName = repoURL.split('/').pop();
+          const repoURL = res[0].refs.fetch;
+          const repoName = repoURL.split('/').pop();
           resolve(repoName);
         }
       });
     });
-  },
+  }
 
-  initAgent: function(username, repoName) {
-    var ipAddress = IP.address();
-    var aClient = new Client(username, ipAddress, repoName);
-    var aWatcher = new GitWatcher(aClient, 5000);
+  static initAgent(username, repoName) {
+    const ipAddress = IP.address();
+    const aClient = new Client(username, ipAddress, repoName);
+    const aWatcher = new GitWatcher(aClient, 5000);
 
     aClient.connectToSocketIoServer();
     aWatcher.start();
-  },
+  }
 
-  start: function() {
-    Promise.join(this.getGitUserName(), this.getRepoName(), this.initAgent);
+  start() {
+    Promise.all([this.getGitUserName(), this.getRepoName()])
+      .then(Agent.initAgent);
   }
 };
-
-module.exports = Agent;

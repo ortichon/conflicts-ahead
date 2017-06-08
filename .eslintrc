@@ -1,4 +1,5 @@
 {
+  "parser": "babel-eslint",
   "plugins": ["lodash"],
   "rules": {
     "lodash/prefer-is-nil": 2,

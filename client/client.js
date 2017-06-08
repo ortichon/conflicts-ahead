@@ -1,26 +1,24 @@
 'use strict';
 
-var io = require('socket.io-client');
-var toQueryString = require('querystring');
-var _ = require('lodash');
+import io from 'socket.io-client';
+import toQueryString from 'querystring';
+import _  from 'lodash';
 
 
-function Client(username, ip , repoName) {
-  this.username = username;
-  this.ip = ip;
-  this.touchedFiles = [];
-  this.currentBranch = '';
-  this.ioClient = null;
-  this.repoName = repoName;
-  console.log('Client initiated');
-}
+export default class Client {
 
-Client.prototype = {
-  constructor: Client,
+  constructor(username, ip , repoName) {
+    this.username = username;
+    this.ip = ip;
+    this.touchedFiles = [];
+    this.currentBranch = '';
+    this.ioClient = null;
+    this.repoName = repoName;
+    console.log('Client initiated');
+  }
 
-  connectToSocketIoServer: function() {
-    var self = this;
-    var query = toQueryString.stringify({
+  connectToSocketIoServer() {
+    const query = toQueryString.stringify({
       repoName: this.repoName,
       username: this.username,
       ip: this.ip
@@ -30,36 +28,34 @@ Client.prototype = {
     // this.ioClient = io
     //   .connect('https://conflicts-ahead.herokuapp.com/', {query: query});
 
-    this.ioClient.on('connect', function () {
+    this.ioClient.on('connect', () => {
       console.log('Socket is connected.');
-      self.sendTouchedFilesToServer();
+      this.sendTouchedFilesToServer();
     });
 
-    this.ioClient.on('disconnect', function () {
+    this.ioClient.on('disconnect', () => {
       console.log('Socket is disconnected.');
     });
-  },
+  }
 
-  sendTouchedFilesToServer: function() {
+  sendTouchedFilesToServer() {
     this.ioClient.emit('files changed', this.touchedFiles);
-  },
+  }
 
-  updateTouchedFiles: function(fileList) {
+  updateTouchedFiles(fileList) {
     fileList = _.compact(fileList.split('\n'));
-    var diff = !_.isEqual(fileList, this.touchedFiles);
+    const diff = !_.isEqual(fileList, this.touchedFiles);
 
     if (fileList && diff) {
       this.touchedFiles = fileList;
       this.sendTouchedFilesToServer();
     }
-  },
+  }
 
-  updateCurrentBranch: function(branchName) {
+  updateCurrentBranch(branchName) {
     if (!_.isEqual(branchName, this.currentBranch)) {
       this.currentBranch = branchName;
       this.ioClient.emit('branch changed', this.currentBranch);
     }
   }
 };
-
-module.exports = Client;

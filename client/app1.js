@@ -1,4 +1,4 @@
-var Client = require('./client');
+import Client from './client';
 
-var aClient = new Client('Roni Sabas', '127.0.0.1', 'conflicts-ahead.git');
+const aClient = new Client('Roni Sabas', '127.0.0.1', 'conflicts-ahead.git');
 aClient.connectToSocketIoServer();
