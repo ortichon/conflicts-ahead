@@ -10,6 +10,13 @@
           "client/agent.js"
         ],
         "lastModified": "2017-06-08T11:54:41.254Z"
+      },
+      "Roni Sabas": {
+        "username": "Roni Sabas",
+        "ip": "127.0.0.1",
+        "isActive": true,
+        "touchedFiles": [],
+        "lastModified": "2017-06-11T16:50:17.605Z"
       }
     }
   },
@@ -19,9 +26,9 @@
       "conflicts-ahead.git": {
         "username": "conflicts-ahead.git",
         "ip": "10.6.11.53",
-        "isActive": false,
+        "isActive": true,
         "touchedFiles": [],
-        "lastModified": "2017-06-11T08:42:31.194Z"
+        "lastModified": "2017-06-11T16:50:59.795Z"
       }
     }
   }

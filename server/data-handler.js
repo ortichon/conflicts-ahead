@@ -1,31 +1,33 @@
 'use strict';
 
-// nodejs modules
-var fs = require('fs');
+// NodeJS modules
+import fs from 'fs';
 // own modules
-var RepoServer = require('./repo-server');
-var User = require('./user');
+import RepoServer from './repo-server';
+import User from './user';
 
+export default class DataHandler {
 
-var availableRepos = {};
+  constructor() {
+    this.availableRepos = {};
+  }
 
-var dataHandler = {
-  fetchLocalData: function fetchLocalData(path) {
+  fetchLocalData(path) {
     path = path ? path : './localData.json';
     try {
-      var content = fs.readFileSync(path); // read data file
-      var json = JSON.parse(content);      // parse data file
-      var repos = Object.keys(json);       // get repo names
+      const content = fs.readFileSync(path); // read data file
+      const json = JSON.parse(content);      // parse data file
+      const repos = Object.keys(json);       // get repo names
 
       // create RepoServer class for each repo name
-      repos.forEach(function(repoName) {
-        var repo = new RepoServer(repoName, {});
-        var users = Object.keys(json[repoName].users);  // get user names
+      repos.forEach(repoName => {
+        const repo = new RepoServer(repoName, {});
+        const users = Object.keys(json[repoName].users);  // get user names
 
         // create User class for each user
-        users.forEach(function(username) {
-          var currentUser = json[repoName].users[username];
-          var user = new User(username, currentUser.ip);
+        users.forEach(username => {
+          const currentUser = json[repoName].users[username];
+          const user = new User(username, currentUser.ip);
 
           user.deactivate();
           user.touchedFiles = currentUser.touchedFiles;
@@ -33,21 +35,19 @@ var dataHandler = {
           repo.addClient(user);
         });
 
-        availableRepos[repoName] = repo;   // update available repos object
+        this.availableRepos[repoName] = repo;   // update available repos object
       });
 
     } catch (err) {
-      availableRepos = {};  // if file does not exists or not readable
+      this.availableRepos = {};  // if file does not exists or not readable
     }
-    return availableRepos;
-  },
+    return this.availableRepos;
+  }
 
-  storeLocalData: function storeLocalData(callback) {
-    var json = JSON.stringify(availableRepos, null, 2);
+  storeLocalData(callback) {
+    const json = JSON.stringify(this.availableRepos, null, 2);
 
     console.log('Writing JSON file to folder...');
     fs.writeFile('./localData.json', json, callback);
   }
 };
-
-module.exports = dataHandler;

@@ -1,18 +1,20 @@
 'use strict';
 
-// nodejs modules
-var path = require('path');
+// NodeJS modules
+import path from 'path';
 // 3rd party modules
-var express = require('express');
-var io = require('socket.io');
-var _ = require('lodash');
+import express from 'express';
+import io from 'socket.io';
+import _ from 'lodash';
 // own modules
-var RepoServer = require('./repo-server');
-var User = require('./user');
-var DataHandler = require('./data-handler');
+import RepoServer from './repo-server';
+import User from './user';
+import DataHandler from './data-handler';
 
 
-var port = process.env.PORT || 9659;
+const port = process.env.PORT || 9659;
+
+const dataHandler = new DataHandler();
 
 // let the server die gracefully
 process.on('SIGINT', cleanExit); // catch ctrl-c
@@ -20,68 +22,66 @@ process.on('SIGTERM', cleanExit); // catch kill
 // process.on('uncaughtException',cleanExit);
 
 function cleanExit() {
-  DataHandler.storeLocalData(process.exit);
+  dataHandler.storeLocalData(process.exit);
 }
 
 // get available repos from file
-var availableRepos = DataHandler.fetchLocalData();
+const availableRepos = dataHandler.fetchLocalData();
 
 // Define our app using express
-var app = express();
+const app = express();
 
 // Initialize web server
-var server = app.listen(port, function() {
-  console.log('listening on port: ', port);
-});
+const server = app.listen(port, () => console.log('listening on port: ', port));
 
 // Initialize socket.io server
-var ioServer = io.listen(server);
+const ioServer = io.listen(server);
 
 // define public folder - for front-end use
-var publicFolder = __dirname + '/public';
+const publicFolder = __dirname + '/public';
 
 app.use(express.static(publicFolder));
 
 // basic initial client response
-app.get('/', function(req, res) {
+app.get('/', (req, res) => {
   res.sendFile(path.join(publicFolder + '/index.html'));
 });
 
-app.get('/repos', function(req, res) {
+app.get('/repos', (req, res) => {
   res.send({data: Object.keys(availableRepos)});
 });
 
-app.get('/users/:repoName', function(req, res) {
-  var repoName = req.params.repoName;
-  var userList = _.toArray(availableRepos[repoName].users);
+app.get('/users/:repoName', (req, res) => {
+  const repoName = req.params.repoName;
+  const userList = _.toArray(availableRepos[repoName].users);
 
   res.send({data: userList});
 });
 
 
 // Initial client connection sequence
-ioServer.on('connection', function(socket) {
-  var repoName = socket.handshake.query.repoName;
-  var username = socket.handshake.query.username;
-  var ip = socket.handshake.query.ip;
+ioServer.on('connection', socket => {
+  const repoName = socket.handshake.query.repoName;
+  const username = socket.handshake.query.username;
+  const ip = socket.handshake.query.ip;
 
-  var repoExists = _.has(availableRepos, repoName);
+  const repoExists = _.has(availableRepos, repoName);
 
   if (repoExists) {
     console.log('repo exists');
-    var userExists = availableRepos[repoName].users[username];
+    const userExists = availableRepos[repoName].users[username];
 
     if (userExists) {
       console.log('userExists');
       userExists.activate();
     } else {
       console.log('creating new user');
-      var aClient = new User(username, ip);
+      const aClient = new User(username, ip);
       availableRepos[repoName].addClient(aClient);
     }
   } else {
     console.log('creating new repo');
-    var users = {};
+    const users = {};
     console.log('creating new user');
     users[username] = new User(username, ip);
 
@@ -90,16 +90,17 @@ ioServer.on('connection', function(socket) {
   }
 
 
-  socket.on('disconnect', function() {
-    availableRepos[repoName].users[username].deactivate();
+  socket.on('disconnect', () => {
+    const user = availableRepos[repoName].users[username];
+    user.deactivate();
     console.log('client disconnected: ', username);
   });
 
-  socket.on('files changed', function(touchedFiles) {
+  socket.on('files changed', touchedFiles => {
     availableRepos[repoName].updateTouchedFiles(username, touchedFiles);
   });
 
-  socket.on('branch changed', function(currentBranch) {
+  socket.on('branch changed', currentBranch => {
     _.noop(currentBranch);
     // aTeamServer.updateCurrentBranch(socket.id, currentBranch)
   });
