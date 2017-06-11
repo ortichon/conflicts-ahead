@@ -17,7 +17,10 @@
     "name": "Or Tichon",
     "email": "or.tichon@gmail.com"
   },
-  "scripts": {},
+  "scripts": {
+    "start": "node ./dist/client/app.js",
+    "roni": "node ./dist/client/app1.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/ortichon/conflicts-ahead.git"
