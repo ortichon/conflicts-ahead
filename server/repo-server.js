@@ -27,8 +27,10 @@ export default class RepoServer {
     return _.map(activeUsers, (user) => user.username);
   }
 
-  updateTouchedFiles(username, touchedFiles) {
-    this.users[username].updateTouchedFiles(touchedFiles);
-    console.log('>>> : ', this.users[username]);
+  updateTouchedFiles(username, touchedFiles, currentBranch) {
+    if (!_.isEmpty(touchedFiles) && !_.isEmpty(currentBranch)) {
+      this.users[username].updateTouchedFiles(touchedFiles, currentBranch);
+      console.log('>>> : ', this.users[username]);
+    }
   }
 };

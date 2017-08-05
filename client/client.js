@@ -39,7 +39,7 @@ export default class Client {
   }
 
   sendTouchedFilesToServer() {
-    this.ioClient.emit('files changed', this.touchedFiles);
+    this.ioClient.emit('files changed', this.touchedFiles, this.currentBranch);
   }
 
   updateTouchedFiles(fileList) {

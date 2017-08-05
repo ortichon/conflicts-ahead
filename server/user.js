@@ -5,8 +5,7 @@ export default class User {
     this.username = username;
     this.ip = ip;
     this.isActive = true;
-    this.touchedFiles = [];
-    this.lastModified = null;
+    this.touchedFiles = {};
   }
 
   activate() {
@@ -17,9 +16,11 @@ export default class User {
     this.isActive = false;
   }
 
-  updateTouchedFiles(fileList) {
-    this.touchedFiles = fileList;
-    this.lastModified = new Date();
+  updateTouchedFiles(fileList, currentBranch) {
+    this.touchedFiles[currentBranch] = {
+      files: fileList,
+      lastModified: new Date()
+    };
     console.log('file list has updated for ', this.username);
   }
 };

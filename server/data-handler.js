@@ -31,7 +31,6 @@ export default class DataHandler {
 
           user.deactivate();
           user.touchedFiles = currentUser.touchedFiles;
-          user.lastModified = currentUser.lastModified;
           repo.addClient(user);
         });
 

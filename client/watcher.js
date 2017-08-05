@@ -21,7 +21,7 @@ export default class GitWatcher {
   }
 
   getTouchedFilesList() {
-    Git().diff([ '--name-only' ], (err, res) => {
+    Git().diff(['--name-only', 'master'], (err, res) => {
       if (err) {
         console.error('error: ', err);
       } else {

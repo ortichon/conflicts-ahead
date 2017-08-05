@@ -96,8 +96,9 @@ ioServer.on('connection', socket => {
     console.log('client disconnected: ', username);
   });
 
-  socket.on('files changed', touchedFiles => {
-    availableRepos[repoName].updateTouchedFiles(username, touchedFiles);
+  socket.on('files changed', (touchedFiles, currentBranch) => {
+    availableRepos[repoName]
+      .updateTouchedFiles(username, touchedFiles, currentBranch);
   });
 
   socket.on('branch changed', currentBranch => {

@@ -51,6 +51,8 @@ export default class Agent {
 
   start() {
     Promise.all([this.getGitUserName(), this.getRepoName()])
-      .then(Agent.initAgent);
+      .then(values => {
+        Agent.initAgent(values[0], values[1]);
+      });
   }
 };

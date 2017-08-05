@@ -18,8 +18,9 @@
     "email": "or.tichon@gmail.com"
   },
   "scripts": {
-    "start": "node ./dist/client/app.js",
-    "roni": "node ./dist/client/app1.js"
+    "client": "node ./dist/client/app.js",
+    "roni": "node ./dist/client/app1.js",
+    "server": "node ./dist/server/server.js"
   },
   "repository": {
     "type": "git",
